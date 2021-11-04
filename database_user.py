@@ -6,44 +6,37 @@ import pickle
 
 class Database_user(database.Database):
     def __init__(self):
-        super().__init__()
-
-    def read(self):
-        if os.stat("examplePickle").st_size != 0:
-            dbfile = open('examplePickle', 'rb')
-            db = pickle.load(dbfile)
+        super(Database_user, self).__init__()
+        dbfile = open('pikel.txt', 'rb')
+        db = pickle.load(dbfile)
+        if db is not None:
+            # print(self.data)
             for keys in db:
-                super().set_value(keys, db[keys])
+                self.set_value(keys, db[keys])
                 print(keys, '=>', db[keys])
-            dbfile.close()
-        else:
-            """
-                if the file is empty, put null key in it
-            """
-            self.write("null", "null")
+        dbfile.close()
+
+    def read(self, key):
+        return super(Database_user, self).get_value(key)
 
     def write(self, key, value):
         if value != "":
-            super().set_value(key, value)
-            dbfile = open("examplePickle", "wb")
+            super(Database_user, self).set_value(key, value)
+            dbfile = open("pikel.txt", "wb")
             pickle.dump(self.data, dbfile)
             dbfile.close()
-            """
-                if there's a null key, delete it
-            """
-        if super().delete_value("null"):
-            self.delete("null")
+            # print(self.data)
 
     def delete(self, key):
         """
         :param key: the key the user wnat to delete
         :return: 0 if successful and 1 if unsuccessful
         """
-        data = super().delete_value(key)
-        dbfile = open("examplePickle", "wb")
+        val = super(Database_user, self).delete_value(key)
+        dbfile = open("pikel.txt", "wb")
         pickle.dump(self.data, dbfile)
         dbfile.close()
-        if data is not None:
+        if val is not None:
             return 0
         else:
             return 1

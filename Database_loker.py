@@ -4,32 +4,42 @@ import database_user
 
 class database_locker(database_user.Database_user):
     def __init__(self):
-        super().__init__()
-        self.data = super().read()
+        super(database_locker, self).__init__()
         self.lokk = threading.Lock()
         self.state = "N"
 
-    def read(self):
-        if not self.state == "W" or not self.state == "D":
-            super().read()
+    def reading(self):
+        val = None
+        """ while self.state == "W":
+            pass"""
+        self.lokk.acquire()
 
-    def write(self, key, value):
-        if not self.state == "W" or not self.state == "D":
-            if not self.lokk.locked():
-                self.lokk.acquire()
-                self.state = "W"
-                super().write(key, value)
-                self.state = "N"
-                self.lokk.release()
+        # self.state = "R"
+        for key in self.data:
+            val = super(database_locker, self).read(key)
+        # self.state = "N"
+        self.lokk.release()
 
-    def delete(self, key):
-        if not self.state == "W" or not self.state == "D":
-            if not self.lokk.locked():
-                self.lokk.acquire()
-                self.state = "D"
-                super().delete(key)
-                self.state = "N"
-                self.lokk.release()
+        return val
+
+    def writing(self, key, value):
+        """ while self.state == "N":
+             pass"""
+        self.lokk.acquire()
+        # self.state = "W"
+        super(database_locker, self).write(key, value)
+        # self.state = "N"
+        self.lokk.release()
+
+    def deleting(self, key):
+        """while self.state == "N":
+            pass"""
+        self.lokk.acquire()
+        # self.state = "W"
+        super(database_locker, self).delete(key)
+        # self.state = "N"
+        self.lokk.release()
+        print(self.data)
 
 
 def main():
