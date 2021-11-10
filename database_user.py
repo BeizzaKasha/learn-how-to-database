@@ -1,5 +1,4 @@
 from io import open
-import os
 import database
 import pickle
 from database_cons import *
@@ -7,7 +6,7 @@ from database_cons import *
 
 class Database_user(database.Database):
     def __init__(self):
-        try:
+        try:  # try to load existing data if there is any, if there isn't create an empty dictionary
             dbfile = open('pikel.txt', 'rb')
             db = pickle.load(dbfile)
             super(Database_user, self).__init__(db)
@@ -15,13 +14,19 @@ class Database_user(database.Database):
             super(Database_user, self).__init__({})
 
     def get_value(self, key):
+        """
+        :param key: key to read from
+        :return: value of key if successful or KEY_NOT_FOUND if unsuccessful
+        """
         return super(Database_user, self).get_value(key)
 
     def set_value(self, key, val):
         """
-        :param key:
-        :param val:
-        :return: 0 if successful, 1 if
+        :param key: key to write into
+        :param val: what to write in the key
+        :return: SUCCESSFUL if successful,
+            FILE_ERROR if there was a problem with writing in the file,
+            and DICTIONARY_ERROR if there was a problem with the database writing.
         """
         retval = super(Database_user, self).set_value(key, val)
         if retval == Database_cons.SUCCESSFUL:
@@ -37,8 +42,10 @@ class Database_user(database.Database):
 
     def delete_value(self, key):
         """
-        :param key: the key the user wnat to delete
-        :return: 0 if successful and 1 if unsuccessful
+        :param key: the key the user want to delete
+        :return: value that got deleted if successful,
+            FILE_ERROR if there was a problem with the file key deleting,
+            KEY_NOT_FOUND if there was a problem with the database deleting.
         """
         val = super(Database_user, self).delete_value(key)
         if val != Database_cons.KEY_NOT_FOUND:

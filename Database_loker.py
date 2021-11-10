@@ -22,7 +22,6 @@ class database_locker(database_user.Database_user):
         self.lock.acquire()
         super(database_locker, self).delete_value(key)
         self.lock.release()
-        print(self.data)
 
 
 def main():
@@ -32,14 +31,13 @@ def main():
         t = threading.Thread(target=dita.set_value("hello" + str(i), "mylife"))
         threds.append(t)
         t.start()
-        t = threading.Thread(target=dita.get_value())
+        t = threading.Thread(target=dita.get_value("hello" + str(i),))
         threds.append(t)
         t.start()
         t = threading.Thread(target=dita.delete_value("hello" + str(i)))
         threds.append(t)
         t.start()
         print("--------------")
-    dita.get_value()
 
 
 if __name__ == "__main__":

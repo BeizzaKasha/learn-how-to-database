@@ -7,22 +7,23 @@ class Database:
 
     def set_value(self, key, val):
         """
-        sets the value for the specified key to the specified value
-        returns 0 if successful and 1 if unsuccessful
+        :param key: key to write into
+        :param val: value to write
+        :return: SUCCESSFUL if successful and DICTIONARY_ERROR if unsuccessful
         """
         try:
-            if val != "":
+            if val != "":  # if val is empty don't write at all
                 self.data[key] = val
                 return Database_cons.SUCCESSFUL
         except:
-            print("there was a problem in set_value")
+            pass
 
         return Database_cons.DICTIONARY_ERROR
 
     def get_value(self, key):
         """
-        :param key: key to read from data
-        :return: value of key if successful or None if unsuccessful
+        :param key: key to read from
+        :return: value of key if successful or KEY_NOT_FOUND if unsuccessful
         """
         if key in self.data:
             return self.data[key]
@@ -32,7 +33,7 @@ class Database:
     def delete_value(self, key):
         """
         :param key: key to delete
-        :return: value that got deleted if successful or None if successful
+        :return: value that got deleted if successful or KEY_NOT_FOUND if successful
         """
         if key in self.data:
             val = self.data[key]
