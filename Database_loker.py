@@ -9,18 +9,28 @@ class database_locker(database_user.Database_user):
 
     def get_value(self, key):
         self.lock.acquire()
+        # print("-----------------------reading------------------------")
+        # print("inside lock of read")
         val = super(database_locker, self).get_value(key)
+        # print("getting out lock of read")
+        # print("--------------------stop-reading----------------------")
         self.lock.release()
         return val
 
     def set_value(self, key, val):
         self.lock.acquire()
+        # print("+++++++++++++++++++++++++writing++++++++++++++++++++++")
+        # print("inside lock of write")
         super(database_locker, self).set_value(key, val)
+        # print("getting out lock of write")
+        # print("+++++++++++++++++++++stop+writing+++++++++++++++++++++")
         self.lock.release()
 
     def delete_value(self, key):
         self.lock.acquire()
+        print("inside lock of delete")
         super(database_locker, self).delete_value(key)
+        print("getting out lock of delete")
         self.lock.release()
 
 
