@@ -9,36 +9,35 @@ class worker():
     def __init__(self):
         self.d = Database_loker.database_locker()
 
-    def write(self, key, value):
-        for i in range(20):
-            self.d.set_value(key + str(i), value)
-            # time.sleep(0.0001)
-
     def read(self, num):
-        for i in range(1):
-            for key in self.d.data:
-                print("read" + num + "." + str(i) + ": " + key + "=>" + self.d.get_value(key))  # + "\n"
-        # print("finito read\n\n\n")
+        for i in range(30):
+            key = "hello" + num + "." + str(i)
+            print(key + "=>" + self.d.get_value(key))  # + "\n"
+
+    def write(self, key, value):
+        for i in range(30, 0, -1):
+            print(f"worker.write: {self.d.set_value(key + str(i-1), value)}")
 
     def delete(self, key):
-        for i in range(9):
-            self.d.delete_value(key + str(i))
-            # time.sleep(0.0001)
+        for i in range(25):
+            print(f"worker.delete: {self.d.delete_value(key + str(i))}")
 
 
 def main():
     worker_obj = worker()
     threds = []
-    for i in range(2):
-        threds.append(threading.Thread(target=worker_obj.write, args=("hello" + str(i) + ".", "mylife")))
-        # threds.append(threading.Thread(target=worker_obj.delete, args=("hello" + str(i) + "."), ))
-        threds.append(threading.Thread(target=worker_obj.read, args=str(i)))
+    for i in range(5):
+        threds.append(threading.Thread(target=worker_obj.write, args=("hello" + str(i) + ".", "mylife",)))
+        threds.append(threading.Thread(target=worker_obj.delete, args=("hello" + str(i) + ".",)))
+        threds.append(threading.Thread(target=worker_obj.read, args=str(i),))
     for t in threds:
         t.start()
     for t in threds:
         while t.is_alive():
             pass
-    print("---------------------------------------------")
+    print("-------------------------------------------------------------------------------------------------------------------------------------------------------")
+    for key in worker_obj.d.data:
+        print(key + "=>" + worker_obj.d.get_value(key))
 
 
 if __name__ == "__main__":

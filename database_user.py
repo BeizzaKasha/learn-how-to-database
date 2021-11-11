@@ -54,7 +54,7 @@ class Database_user(database.Database):
                 pickle.dump(self.data, dbfile)
                 dbfile.close()
             except:
-                return Database_cons.FILE_ERROR
+                val = Database_cons.FILE_ERROR
         return val
 
 

@@ -1,4 +1,7 @@
+import asyncio
 import threading
+import time
+
 import database_user
 
 
@@ -6,15 +9,18 @@ class database_locker(database_user.Database_user):
     def __init__(self):
         super(database_locker, self).__init__()
         self.lock = threading.Lock()
+        self.semi = threading.Semaphore(10)
 
     def get_value(self, key):
-        self.lock.acquire()
+        while self.lock.locked():
+            time.sleep(0.0001)
+        self.semi.acquire()
         # print("-----------------------reading------------------------")
         # print("inside lock of read")
         val = super(database_locker, self).get_value(key)
         # print("getting out lock of read")
         # print("--------------------stop-reading----------------------")
-        self.lock.release()
+        self.semi.release()
         return val
 
     def set_value(self, key, val):
@@ -28,10 +34,11 @@ class database_locker(database_user.Database_user):
 
     def delete_value(self, key):
         self.lock.acquire()
-        print("inside lock of delete")
-        super(database_locker, self).delete_value(key)
-        print("getting out lock of delete")
+        # print("inside lock of delete")
+        val = super(database_locker, self).delete_value(key)
+        # print("getting out lock of delete")
         self.lock.release()
+        return val
 
 
 def main():
