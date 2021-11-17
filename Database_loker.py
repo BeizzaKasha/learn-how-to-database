@@ -27,10 +27,11 @@ class database_locker(database_user.Database_user):
         self.lock.acquire()
         # print("+++++++++++++++++++++++++writing++++++++++++++++++++++")
         # print("inside lock of write")
-        super(database_locker, self).set_value(key, val)
+        val = super(database_locker, self).set_value(key, val)
         # print("getting out lock of write")
         # print("+++++++++++++++++++++stop+writing+++++++++++++++++++++")
         self.lock.release()
+        return val
 
     def delete_value(self, key):
         self.lock.acquire()

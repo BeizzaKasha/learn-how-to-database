@@ -16,10 +16,10 @@ class worker():
 
     def write(self, key, value):
         for i in range(30, 0, -1):
-            print(f"worker.write: {self.d.set_value(key + str(i-1), value)}")
+            print(f"worker.write: {self.d.set_value(key + str(i - 1), value)}")
 
     def delete(self, key):
-        for i in range(25):
+        for i in range(29):
             print(f"worker.delete: {self.d.delete_value(key + str(i))}")
 
 
@@ -29,13 +29,22 @@ def main():
     for i in range(5):
         threds.append(threading.Thread(target=worker_obj.write, args=("hello" + str(i) + ".", "mylife",)))
         threds.append(threading.Thread(target=worker_obj.delete, args=("hello" + str(i) + ".",)))
-        threds.append(threading.Thread(target=worker_obj.read, args=str(i),))
+        threds.append(threading.Thread(target=worker_obj.read, args=str(i), ))
     for t in threds:
         t.start()
     for t in threds:
         while t.is_alive():
             pass
-    print("-------------------------------------------------------------------------------------------------------------------------------------------------------")
+    """deleters = []  # for cleaner data in the end
+    for i in range(5):
+        deleters.append(threading.Thread(target=worker_obj.delete, args=("hello" + str(i) + ".",)))
+    for t in deleters:
+        t.start()
+    for t in threds:
+        while t.is_alive():
+            pass"""
+    print("----------------------------------------------------------------------------------------------------"
+          "---------------------------------------------------")
     for key in worker_obj.d.data:
         print(key + "=>" + worker_obj.d.get_value(key))
 
