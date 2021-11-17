@@ -40,7 +40,7 @@ def main():
         deleters.append(threading.Thread(target=worker_obj.delete, args=("hello" + str(i) + ".",)))
     for t in deleters:
         t.start()
-    for t in threds:
+    for t in deleters:
         while t.is_alive():
             pass"""
     print("----------------------------------------------------------------------------------------------------"
